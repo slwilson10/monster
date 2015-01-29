@@ -22,14 +22,18 @@ class Player(Character):
     pass
     # def __init__(self, posX, posY):
         # Character.__init__(self, posX, posY) 
-    def place(self):
-        self.position = [random.randint(0,Grid_Size()[0] - 1),random.randint(0,Grid_Size()[1] - 1))]    
+        
 
 class Monster(Character):
     pass
 
 class Item:
-    pass
+    def __init__(self, posX, posY):
+        self.positionX = posX
+        self.positionY = posY
+        
+    def position(self):
+        return [self.positionX, self.positionY]
 
 class Treasure(Item):
     pass
@@ -40,13 +44,52 @@ class Trap(Item):
 class Exit(Item):
     pass
 
+def random_place(gridSize):
+    position = [random.randint(0,gridSize[0] - 1),random.randint(0,gridSize[1] - 1)]    
+    return position
+        
+def check_overlap(pos1, pos2):
     
-def setup_game():
+    if pos1 == pos2:
+        return False
+    
+    
+    return playerPos[7,7]
+        
+        
+    
+    
 
 
 def main():
-    gridsize = Grid(10,10)
-    setup_game()
+    maxGridSize = Grid(5,5)
+    gridSize = maxGridSize.grid_size()
+    
+    player = Character(random_place(gridSize)[0],random_place(gridSize)[1])
+    playerPos = player.position()
+    monster = Character(random_place(gridSize)[0],random_place(gridSize)[1])
+    monsterPos = monster.position()
+    treasure = Item(random_place(gridSize)[0],random_place(gridSize)[1])
+    treasurePos = treasure.position()
+    trap = Item(random_place(gridSize)[0],random_place(gridSize)[1])
+    trapPos = trap.position()
+    exit = Item(random_place(gridSize)[0],random_place(gridSize)[1])
+    exitPos = exit.position()
+    
+    print (playerPos)
+    print (monsterPos)
+    print (treasurePos)
+    print (trapPos)
+    print (exitPos)
+    
+    check_overlap(playerPos, monsterPos, treasurePos, trapPos, exitPos, gridSize)
+    
+    print (playerPos)
+    print (monsterPos)
+    print (treasurePos)
+    print (trapPos)
+    print (exitPos)
+
     
 
 
