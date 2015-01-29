@@ -11,87 +11,78 @@ class Grid:
             
 
 class Character:
-    def __init__(self, posX, posY):
-        self.positionX = posX
-        self.positionY = posY
-        
+    def __init__(self, pos):
+        self.coord = pos
+
     def position(self):
-        return [self.positionX, self.positionY]  
+        return self.coord
 
 class Player(Character):
-    pass
-    # def __init__(self, posX, posY):
-        # Character.__init__(self, posX, posY) 
+    def __init__(self, pos):
+        Character.__init__(self,pos)
         
 
 class Monster(Character):
-    pass
+    def __init__(self, pos):
+        Character.__init__(self, pos)
 
 class Item:
-    def __init__(self, posX, posY):
-        self.positionX = posX
-        self.positionY = posY
-        
+    def __init__(self, pos):
+        self.coord = pos
+
     def position(self):
-        return [self.positionX, self.positionY]
+        return self.coord
 
 class Treasure(Item):
-    pass
+    def __init__(self, pos):
+        Item.__init__(self, pos)
 
 class Trap(Item):
-    pass
+    def __init__(self, pos):
+        Item.__init__(self, pos)
 
 class Exit(Item):
-    pass
-
-def random_place(gridSize):
-    position = [random.randint(0,gridSize[0] - 1),random.randint(0,gridSize[1] - 1)]    
-    return position
-        
-def check_overlap(pos1, pos2):
-    
-    if pos1 == pos2:
-        return False
-    
-    
-    return playerPos[7,7]
-        
-        
-    
-    
+    def __init__(self, pos):
+        Item.__init__(self, pos)
 
 
 def main():
     maxGridSize = Grid(5,5)
     gridSize = maxGridSize.grid_size()
+    coords_list = []
+        
+            
+    def random_coords():
+        check = False
+        while check == False:
+            position = random.randrange(0,gridSize[0] + 1 ),random.randrange(0,gridSize[1] + 1)
+            if position in coords_list:
+                check = False
+            else:
+                coords_list.append(position)
+                return position
     
-    player = Character(random_place(gridSize)[0],random_place(gridSize)[1])
+    player = Player(random_coords()) 
     playerPos = player.position()
-    monster = Character(random_place(gridSize)[0],random_place(gridSize)[1])
-    monsterPos = monster.position()
-    treasure = Item(random_place(gridSize)[0],random_place(gridSize)[1])
+
+    monster = Monster(random_coords())    
+    monsterPos = monster.position()     
+
+    treasure = Treasure(random_coords())    
     treasurePos = treasure.position()
-    trap = Item(random_place(gridSize)[0],random_place(gridSize)[1])
+
+    trap = Trap(random_coords())    
     trapPos = trap.position()
-    exit = Item(random_place(gridSize)[0],random_place(gridSize)[1])
+        
+    exit = Exit(random_coords())    
     exitPos = exit.position()
-    
+
+
     print (playerPos)
     print (monsterPos)
     print (treasurePos)
     print (trapPos)
     print (exitPos)
-    
-    check_overlap(playerPos, monsterPos, treasurePos, trapPos, exitPos, gridSize)
-    
-    print (playerPos)
-    print (monsterPos)
-    print (treasurePos)
-    print (trapPos)
-    print (exitPos)
-
-    
-
 
 # This is the standard boilerplate that calls the main() function.
 if __name__ == '__main__':
