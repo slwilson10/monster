@@ -1,6 +1,7 @@
 import sys
 import random
 import os
+import math
 
 class Grid:
     def __init__(self, maxH, maxW):
@@ -80,7 +81,7 @@ def main():
 
     
     def draw_grid():
-        os.system('cls')
+        # os.system('cls')
         for y in range(0,gridSize[0]+1):
                 for x in range(0,gridSize[1]+1):
                     if playerPos[0] == x and playerPos[1] == y:
@@ -103,7 +104,7 @@ def main():
                 sys.stdout.write('\r\n')
     
     def player_move(playerPos):
-        print('Move using WASD')
+        print('Move using WASD and E to exit.')
         choice = input('Move: ')
         if choice == 'w' and playerPos[1] != 0:
             playerPos = [playerPos[0], playerPos[1] - 1]
@@ -120,6 +121,9 @@ def main():
         if choice == 'd' and playerPos[0] != gridSize[0]:
             playerPos = [playerPos[0] + 1, playerPos[1]]
             return playerPos
+            
+        if choice == 'e':
+            exit_game()
    
         else:       
             print('Not a valid move')
@@ -127,38 +131,44 @@ def main():
             draw_grid()
             
     def monster_move(playerPos, monsterPos):
-        mon_x = monsterPos[0]
-        mon_y = monsterPos[1]
-        player_x = playerPos[0]
-        player_y = playerPos[1]
+        monX = monsterPos[0]
+        monY = monsterPos[1]
+        playerX = playerPos[0]
+        playerY = playerPos[1]
             
-        if(player_x - mon_x != 0):
-            if(player_x - mon_x < 0):
-                monsterPos = [mon_x - 1, mon_y]
+        if(playerX - monX != 0):
+            if(playerX - monX < 0):
+                monsterPos = [monX - 1, monY]
                 return monsterPos
             else:
-                monsterPos = [mon_x + 1, mon_y]
+                monsterPos = [monX + 1, monY]
                 return monsterPos
         else:
-            if(player_y - mon_y < 0):
-                monsterPos = [mon_x, mon_y - 1]
+            if(playerY - monY < 0):
+                monsterPos = [monX, monY - 1]
                 return monsterPos
             else:
-                monsterPos = [mon_x, mon_y + 1]
+                monsterPos = [monX, monY + 1]
                 return monsterPos
-    
-    gameover = False
-    while gameover == False:
+                
+    def collision_check(playerPos, monsterPos):
+        
+        if monsterPos == playerPos:
+            print ('You were eaten by the Monster')
+            exit_game()
+
+    def exit_game():
+        sys.exit()
+
+    while True:
         draw_grid()
         monsterPos = monster_move(playerPos, monsterPos)
+        collision_check(playerPos, monsterPos)
+
+            
         playerPos = player_move(playerPos)
         print (playerPos)
         print (monsterPos)
-        choice = input('Escape?: ')
-        if choice == 'e':
-            gameover = True
-        else:
-            pass
 
         
 # This is the standard boilerplate that calls the main() function.
