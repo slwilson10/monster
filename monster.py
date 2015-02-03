@@ -25,8 +25,12 @@ class Player(Character):
         
 
 class Monster(Character):
-    def __init__(self, pos):
+    def __init__(self, pos, status):
         Character.__init__(self, pos)
+        self.status = status
+        
+    def awake(self):
+        return self.status
 
 class Item:
     def __init__(self, pos):
@@ -63,23 +67,7 @@ def main():
             else:
                 coords_list.append(position)
                 return position
-    
-    player = Player(random_coords()) 
-    playerPos = player.position()
 
-    monster = Monster(random_coords())    
-    monsterPos = monster.position()     
-
-    treasure = Treasure(random_coords())    
-    treasurePos = treasure.position()
-
-    trap = Trap(random_coords())    
-    trapPos = trap.position()
-        
-    exit = Exit(random_coords())    
-    exitPos = exit.position()
-
-    
     def draw_grid():
         # os.system('cls')
         for y in range(0,gridSize[0]+1):
@@ -107,19 +95,19 @@ def main():
         print('Move using WASD and E to exit.')
         choice = input('Move: ')
         if choice == 'w' and playerPos[1] != 0:
-            playerPos = [playerPos[0], playerPos[1] - 1]
+            playerPos = (playerPos[0], playerPos[1] - 1)
             return playerPos
             
         if choice == 'a' and playerPos[0] != 0:
-            playerPos = [playerPos[0]- 1, playerPos[1] ]
+            playerPos = (playerPos[0]- 1, playerPos[1] )
             return playerPos
             
         if choice == 's' and playerPos[1] != gridSize[1]:
-            playerPos = [playerPos[0], playerPos[1] + 1]
+            playerPos = (playerPos[0], playerPos[1] + 1)
             return playerPos
             
         if choice == 'd' and playerPos[0] != gridSize[0]:
-            playerPos = [playerPos[0] + 1, playerPos[1]]
+            playerPos = (playerPos[0] + 1, playerPos[1])
             return playerPos
             
         if choice == 'e':
@@ -138,37 +126,74 @@ def main():
             
         if(playerX - monX != 0):
             if(playerX - monX < 0):
-                monsterPos = [monX - 1, monY]
+                monsterPos = (monX - 1, monY)
                 return monsterPos
             else:
-                monsterPos = [monX + 1, monY]
+                monsterPos = (monX + 1, monY)
                 return monsterPos
         else:
             if(playerY - monY < 0):
-                monsterPos = [monX, monY - 1]
+                monsterPos = (monX, monY - 1)
                 return monsterPos
             else:
-                monsterPos = [monX, monY + 1]
+                monsterPos = (monX, monY + 1)
                 return monsterPos
                 
-    def collision_check(playerPos, monsterPos):
-        
-        if monsterPos == playerPos:
-            print ('You were eaten by the Monster')
+    def monster_check(playerPos, monsterPos):
+        if playerPos == monsterPos:
+            print ('You were eaten by the Monster!')
             exit_game()
 
+        else:
+            pass
+            
+    def trap_check(playerPos, trapPos):
+        if playerPos == trapPos:
+            print ('You awoke the Monster!')
+            return True 
+
+        else:
+            return False
+
+
     def exit_game():
-        sys.exit()
+        sys.exit()      
+    
+    player = Player(random_coords()) 
+    playerPos = player.position()
+
+    monster = Monster(random_coords(), False)    
+    monsterPos = monster.position()  
+        
+
+    treasure = Treasure(random_coords())    
+    treasurePos = treasure.position()
+
+    trap = Trap(random_coords())    
+    trapPos = trap.position()
+        
+    exit = Exit(random_coords())    
+    exitPos = exit.position()
 
     while True:
         draw_grid()
-        monsterPos = monster_move(playerPos, monsterPos)
-        collision_check(playerPos, monsterPos)
+        
+        if monster.awake():
+            monster_check(playerPos, monsterPos)
+            monsterPos = monster_move(playerPos, monsterPos)
+            monster_check(playerPos, monsterPos)
+        else:
+            if trap_check(playerPos, trapPos):
+                print ('awaking monster')
+                monster =  Monster(monsterPos, True) 
+            
+            else:
+                pass
+        
 
             
         playerPos = player_move(playerPos)
-        print (playerPos)
-        print (monsterPos)
+        
 
         
 # This is the standard boilerplate that calls the main() function.
