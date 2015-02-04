@@ -40,12 +40,20 @@ class Item:
         return self.coord
 
 class Treasure(Item):
-    def __init__(self, pos):
-        Item.__init__(self, pos)
+    def __init__(self, pos, status):
+        Character.__init__(self, pos)
+        self.status = status
+        
+    def collected(self):
+        return self.status
 
 class Trap(Item):
-    def __init__(self, pos):
+    def __init__(self, pos, trapNumber):
         Item.__init__(self, pos)
+        self.trapNumber = trapNumber
+        
+    def trap_number(self):
+        return self.trapNumber
 
 class Exit(Item):
     def __init__(self, pos):
@@ -53,9 +61,6 @@ class Exit(Item):
 
 
 def main():
-    maxGridSize = Grid(10,10)
-    gridSize = maxGridSize.grid_size()
-    coords_list = []
         
             
     def random_coords():
@@ -72,6 +77,7 @@ def main():
         # os.system('cls')
         for y in range(0,gridSize[0]+1):
                 for x in range(0,gridSize[1]+1):
+
                     if playerPos[0] == x and playerPos[1] == y:
                         sys.stdout.write('P')
                         
@@ -80,12 +86,14 @@ def main():
                         
                     elif treasurePos[0] == x and treasurePos[1] == y:
                         sys.stdout.write('$')
-                        
-                    elif trapPos[0] == x and trapPos[1] == y:
-                        sys.stdout.write('T')
-                        
+                    
                     elif exitPos[0] == x and exitPos[1] == y:
                         sys.stdout.write('E')
+                    
+                    elif (x, y) in traps:
+                        sys.stdout.write('T')
+                        
+                    
 
                     else:
                         sys.stdout.write('X')
@@ -143,21 +151,38 @@ def main():
         if playerPos == monsterPos:
             print ('You were eaten by the Monster!')
             exit_game()
-
         else:
             pass
             
-    def trap_check(playerPos, trapPos):
-        if playerPos == trapPos:
+    def trap_check(playerPos, traps):
+        if playerPos in traps:
             print ('You awoke the Monster!')
             return True 
-
+        else:
+            return False
+            
+    def treasure_check(playerPos, treasurePos):
+        if playerPos == treasurePos:
+            print ('You collected the treasure!')
+            return True 
+        else:
+            return False
+            
+    def exit_check(playerPos, exitPos):
+        if playerPos == exitPos:
+            print ('You escaped safely!')
+            return True 
         else:
             return False
 
 
     def exit_game():
         sys.exit()      
+    
+    maxGridSize = Grid(10,10)
+    gridSize = maxGridSize.grid_size()
+    coords_list = []
+    numberOfTraps = 3
     
     player = Player(random_coords()) 
     playerPos = player.position()
@@ -166,11 +191,15 @@ def main():
     monsterPos = monster.position()  
         
 
-    treasure = Treasure(random_coords())    
+    treasure = Treasure(random_coords(), False)    
     treasurePos = treasure.position()
-
-    trap = Trap(random_coords())    
-    trapPos = trap.position()
+    
+    traps = []
+    trapNumber = 0
+    while  len(traps) < numberOfTraps:
+            newTrap = Trap(random_coords(), len(traps))
+            traps.append(newTrap.position()) 
+        
         
     exit = Exit(random_coords())    
     exitPos = exit.position()
@@ -183,13 +212,22 @@ def main():
             monsterPos = monster_move(playerPos, monsterPos)
             monster_check(playerPos, monsterPos)
         else:
-            if trap_check(playerPos, trapPos):
-                print ('awaking monster')
+            if trap_check(playerPos, traps):
                 monster =  Monster(monsterPos, True) 
-            
+
             else:
                 pass
         
+        if treasure.collected():
+            if exit_check(playerPos, exitPos):
+                print ('You won the game!')
+                exit_game()
+                
+            else:
+                pass
+        else: 
+            if treasure_check(playerPos, treasurePos):
+                treasure = Treasure(treasurePos, True)
 
             
         playerPos = player_move(playerPos)
