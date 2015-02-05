@@ -99,6 +99,63 @@ def main():
                         sys.stdout.write('X')
                 sys.stdout.write('\r\n')
     
+    def choose_gridsize():
+        
+            print('Level size? 5-10')
+            
+            while True:
+                try:
+                    sizeChoice = int(input('Choice?: '))
+
+                
+                except ValueError:
+                    print ("Please enter a number.")
+                    continue
+            
+            
+                if sizeChoice < 5 or sizeChoice > 10:
+                    print ('Not a valid choice')
+                
+                else:
+                    return sizeChoice
+            
+    
+    def choose_difficulty(newSize):
+
+            print('Difficulty? 1(Easy), 2(Medium), 3(Hard)')
+            while True:
+                try:
+                    diffChoice = int(input('Choice?: '))
+                
+                except ValueError:
+                    print ("Please enter a number.")
+                    continue
+                    
+                if diffChoice > 1 or diffChoice < 3:
+                    if diffChoice == 1:
+                        return math.trunc(newSize/2) - 1
+                        
+                    elif diffChoice == 2:
+                        return math.trunc(newSize/2) + 1
+                        
+                    elif diffChoice == 3:
+                        return math.trunc(newSize/2) + 2
+                        
+                    else:
+                        print ('Something went wrong')
+                        break
+
+                else:
+                    print ('Not a valid choice')
+                    continue
+                
+        
+    
+
+    
+
+    
+    
     def player_move(playerPos):
         print('Move using WASD and E to exit.')
         choice = input('Move: ')
@@ -179,10 +236,17 @@ def main():
     def exit_game():
         sys.exit()      
     
-    maxGridSize = Grid(10,10)
+    
+    newSize = choose_gridsize()
+    maxGridSize = Grid(newSize,newSize)     
     gridSize = maxGridSize.grid_size()
     coords_list = []
-    numberOfTraps = 3
+    
+    
+    numberOfTraps = choose_difficulty(newSize)
+    
+
+    
     
     player = Player(random_coords()) 
     playerPos = player.position()
@@ -203,6 +267,10 @@ def main():
         
     exit = Exit(random_coords())    
     exitPos = exit.position()
+    
+    # start_screen()
+    
+    
 
     while True:
         draw_grid()
