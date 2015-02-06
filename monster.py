@@ -48,13 +48,9 @@ class Treasure(Item):
         return self.status
 
 class Trap(Item):
-    def __init__(self, pos, trapNumber):
+    def __init__(self, pos):
         Item.__init__(self, pos)
-        self.trapNumber = trapNumber
         
-    def trap_number(self):
-        return self.trapNumber
-
 class Exit(Item):
     def __init__(self, pos):
         Item.__init__(self, pos)
@@ -90,7 +86,8 @@ def main():
                     elif exitPos[0] == x and exitPos[1] == y:
                         sys.stdout.write('E')
                     
-                    elif (x, y) in traps:
+                    elif (x, y) in showTraps:
+                        
                         sys.stdout.write('T')
                         
                     
@@ -258,15 +255,18 @@ def main():
     treasure = Treasure(random_coords(), False)    
     treasurePos = treasure.position()
     
+    showTraps = []
     traps = []
     trapNumber = 0
     while  len(traps) < numberOfTraps:
-            newTrap = Trap(random_coords(), len(traps))
-            traps.append(newTrap.position()) 
-        
-        
+            
+            newTrap = Trap(random_coords())
+            traps.append(newTrap.position())
+           
     exit = Exit(random_coords())    
     exitPos = exit.position()
+    
+    
     
     # start_screen()
     
@@ -281,6 +281,8 @@ def main():
             monster_check(playerPos, monsterPos)
         else:
             if trap_check(playerPos, traps):
+                for t in traps:
+                    showTraps.append(t)
                 monster =  Monster(monsterPos, True) 
 
             else:
